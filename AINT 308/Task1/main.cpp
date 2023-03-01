@@ -1,8 +1,8 @@
 //James Rogers Jan 2022 (c) Plymouth University
 #include <iostream>
 
-#include<opencv2/opencv.hpp>
-#include<opencv2/opencv_modules.hpp>
+#include <opencv2/opencv.hpp>
+#include <opencv2/opencv_modules.hpp>
 
 using namespace std;
 using namespace cv;
@@ -29,8 +29,9 @@ int highestValue(Vec3b pixelValue) // Function returns a number to signify eithe
     }
 }
 
-
 int main(){
+
+    cout<< "OpenCV version: "<< getVersionMajor() << "." << getVersionMinor() <<endl;
 
     int imgWidth;
     int imgHight;
@@ -109,20 +110,6 @@ int main(){
         green = 0;
         hue = 0;
 
-        // have variables that tell me if it classifies into any colour?
-
-        //==============example code, feel free to delete=============
-        //int x=0;
-        //int y=0;
-        //Vec3b PixelValue = Car.at<Vec3b>(y,x);
-
-        // so PixelValue is an array that contains the r, g and b values for a point.
-        //cout<<"The blue value at (0,0) is " <<(int)PixelValue[0]<<endl;
-        //cout<<"The green value at (0,0) is "<<(int)PixelValue[1]<<endl;
-        //cout<<"The red value at (0,0) is "  <<(int)PixelValue[2]<<endl;
-        //============================================================
-
-        //display the car image untill x is pressed
         while(waitKey(10)!='x'){
             imshow("Car", Car);
         }
