@@ -3,6 +3,10 @@
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/opencv_modules.hpp>
+#include <opencv2/video/background_segm.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/core/core.hpp>
+
 
 using namespace std;
 using namespace cv;
@@ -28,6 +32,23 @@ int highestValue(Vec3b pixelValue) // Function returns a number to signify eithe
         return 0; // nothing aka there is  no dominant colour. Example, this stops a slightly blue hued pixel counting as a full blue
     }
 }
+
+Mat bGRemover(Mat carImage)
+{
+    // convert image to gray
+    Mat gray_image;
+    cvtColor(carImage, gray_image, COLOR_BGR2GRAY);
+
+    Ptr<BackgroundSubtractorMOG2> subtractor = createBackgroundSubtractorMOG2(); // make a pointer to the background subtractor
+
+    Mat fGMask; //  make a mat for the new foreground image of the car
+    subtractor->apply(gray_image, fGMask); //  subtract the background from the gray image
+
+    imshow("fGMask", fGMask);
+
+    return fGMask; //  return the new car image with no background
+}
+
 
 int main(){
 
@@ -59,6 +80,8 @@ int main(){
         imgHight = Car.rows;
         cout<< "Width of this image is: "<< imgWidth <<endl;
         cout<< "Hight of this image is: "<< imgHight <<endl;
+
+        Mat carNoBG = bGRemover(Car);
 
         //Your code goes here. The example code below shows you how to read the red, green, and blue colour values of the
         //pixel at position (0,0). Modify this section to check not just one pixel, but all of them in the 640x480 image
