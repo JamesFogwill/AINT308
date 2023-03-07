@@ -32,7 +32,7 @@ int highestValue(Vec3b pixelValue) // Function returns a number to signify eithe
         return 0; // nothing aka there is  no dominant colour. Example, this stops a slightly blue hued pixel counting as a full blue
     }
 }
-
+/*
 Mat bGRemover(Mat carImage)
 {
     // convert image to gray
@@ -48,7 +48,7 @@ Mat bGRemover(Mat carImage)
 
     return fGMask; //  return the new car image with no background
 }
-
+*/
 
 int main(){
 
@@ -65,7 +65,7 @@ int main(){
     string PathToFolder = "../Task1/Car Images/";
 
     //Loop through the 30 car images
-    for(int n=0; n<37; ++n){
+    for(int n=0; n<36; ++n){
 
         //Each image is named 0.png, 1.png, 2.png, etc. So generate the image file path based on n and the folder path
         string PathToImage = PathToFolder+to_string(n)+".png";
@@ -81,7 +81,7 @@ int main(){
         cout<< "Width of this image is: "<< imgWidth <<endl;
         cout<< "Hight of this image is: "<< imgHight <<endl;
 
-        Mat carNoBG = bGRemover(Car);
+        //Mat carNoBG = bGRemover(Car);
 
         //Your code goes here. The example code below shows you how to read the red, green, and blue colour values of the
         //pixel at position (0,0). Modify this section to check not just one pixel, but all of them in the 640x480 image

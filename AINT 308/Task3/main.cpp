@@ -9,16 +9,34 @@ int main()
 {
 
     //Path to image file
-    string Path = "../Task3/PCB Images/";
+    string Path;
     double maximumError = 0.009;
 
     //loop through component images
-    for(int n=0; n<10; ++n){
+    for(int n=0; n<18; ++n){
 
-        //read PCB and component images
-        Mat PCB = imread(Path+"PCB.png");
-        Mat Component = imread(Path+"Component"+to_string(n)+".png");
+        Mat PCB;
+        Mat Component;
         Mat greyScaleOutputImage; // mat for thegreyscale output that shows where most similar match is using match template
+
+        if(n <10){
+            //this will load the images supplied for the task
+
+            Path = "../Task3/PCB Images/";
+
+            //read PCB and component images
+            PCB = imread(Path+"PCB.png");
+            Component = imread(Path+"Component"+to_string(n)+".png");
+
+        }
+        else{
+            // this will load my own dataset after the tasks images have been used.
+            Path = "../Task3/My PCB Images/";
+
+            PCB = imread(Path+"PCBrmvd.png");
+            Component = imread(Path+"Component"+to_string(n-9)+".png");
+
+        }
 
         //================Your code goes here=====================
 
@@ -37,13 +55,13 @@ int main()
             rectangle(PCB, min_Loc, Point(min_Loc.x + Component.cols, min_Loc.y + Component.rows), Scalar(0,0,255),2); //  draws rectangle from point of most imilarity and adds the width and hight of component image, then makes rectangle red with line thickness 2.
             //imshow("Best Match", PCB); //  displays the PCB with rec
         }
-        else { //  if component is not visable
+        else
+        {   //  if component is not visable
             cout<<min_Val<<endl; //  outputs the error value
             cout<<"maxmimum error value was reached, component likely missing at position: "<< min_Loc <<endl; //  outputs the position of missing component
         }
 
         //cout<<min_Val<<endl;
-
 
 
 

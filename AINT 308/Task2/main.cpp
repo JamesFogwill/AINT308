@@ -3,17 +3,33 @@
 #include <fstream>
 #include<opencv2/opencv.hpp>
 
-
-
 using namespace std;
 using namespace cv;
 
 int main()
 {
     int circleRadius = 20;
+    int n = 1;
+    VideoCapture InputStream;
+    Point Pivot;
+    Vec3b LowerBound;
+    Vec3b UpperBound;
 
-    VideoCapture InputStream("C:/AINT308Lib/Data/Task2 Video.mp4"); //Load in the video as an input stream
-    const Point Pivot(592,52);                                      //Pivot position in the video
+    if (n == 0){
+
+        InputStream = VideoCapture("C:/AINT308Lib/Data/Task2 Video.mp4"); //Load in the video as an input stream
+        Pivot = Point(592,52);
+        LowerBound = Vec3b(100,100,100);
+        UpperBound = Vec3b(140, 255,255);//Pivot position in the video
+    }
+    else
+    {
+
+        InputStream = VideoCapture("C:/GitHub/AINT308/AINT 308/Task2/MyData/RedPendulum.mp4");
+        Pivot = Point(547,100);
+        LowerBound = Vec3b(0,100,100);
+        UpperBound = Vec3b(20,255,255);
+    }
 
     //Open output file for angle data
     ofstream DataFile;
@@ -46,9 +62,6 @@ int main()
 
         //Vec3b LowerBound(HueLower, SatLower, ValLower);
         //Vec3b UpperBound(HueUpper, SatUpper, ValUpper);
-
-        Vec3b LowerBound(100,100,100);
-        Vec3b UpperBound(140, 255,255);
 
         inRange(FrameHSV,LowerBound,UpperBound,FrameFiltered);
 
