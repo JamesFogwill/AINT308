@@ -27,8 +27,8 @@ int main()
 
         InputStream = VideoCapture("C:/GitHub/AINT308/AINT 308/Task2/MyData/RedPendulum.mp4");
         Pivot = Point(547,100);
-        LowerBound = Vec3b(0,100,100);
-        UpperBound = Vec3b(20,255,255);
+        LowerBound = Vec3b(0,70,70);
+        UpperBound = Vec3b(25,255,255);
     }
 
     //Open output file for angle data
@@ -65,16 +65,18 @@ int main()
 
         inRange(FrameHSV,LowerBound,UpperBound,FrameFiltered);
 
-        imshow("HSV image", FrameFiltered);
+        imshow("Filtered HSV image", FrameFiltered);
 
         Moments m = moments(FrameFiltered, true);
 
+        // if there is a moment the video is playing and lines are drawn
         if(m.m00 > 0)
         {
             Point p(m.m10/m.m00, m.m01/m.m00);
 
             circle(Frame,p ,circleRadius, Scalar(255,100,100),2);
 
+            // creates the points where the lines will start and end
             Point lineTopX(p.x + 25,p.y);
             Point lineBotX(p.x -25,p.y);
             Point lineTopY(p.x,p.y + 25);

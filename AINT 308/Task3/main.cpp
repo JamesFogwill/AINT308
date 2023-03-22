@@ -10,6 +10,7 @@ int main()
 
     //Path to image file
     string Path;
+    // threshold value for deciding whether the component is on the pcb or not
     double maximumError = 0.009;
 
     //loop through component images
