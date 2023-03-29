@@ -10,8 +10,8 @@ using namespace std;
 int main(int argc, char** argv)
 {
     //Calibration file paths (you need to make these)
-    string intrinsic_filename = "";
-    string extrinsic_filename = "";
+    string intrinsic_filename = "C:/GitHub/AINT308/AINT 308/StereoCalibration/intrinsics.xml";
+    string extrinsic_filename = "C:/GitHub/AINT308/AINT 308/StereoCalibration/extrinsics.xml";
 
     //================================================Load Calibration Files===============================================
     //This code loads in the intrinsics.xml and extrinsics.xml calibration files, and creates: map11, map12, map21, map22.
@@ -69,53 +69,71 @@ int main(int argc, char** argv)
     sgbm->setMode(StereoSGBM::MODE_SGBM);
 
     //==================================================Main Program Loop================================================
-    int ImageNum=0; //current image index
+
+    //Open output file for angle data
+    ofstream DataFile;
+    DataFile.open ("C:/GitHub/AINT308/AINT 308/Task4/Task4/Data.csv");
+
+    int ImageNum=0;//current image index
+    int distImgNum = 30;//current image index for distance loop
     while (1){
-        //Load images from file (needs changing for known distance targets)
-        Mat Left =imread("../Task4/Unknown Targets/left" +to_string(ImageNum)+".jpg");
-        Mat Right=imread("../Task4/Unknown Targets/right"+to_string(ImageNum)+".jpg");
-        cout<<"Loaded image: "<<ImageNum<<endl;
+        if(ImageNum <= 7){
 
-        //Distort image to correct for lens/positional distortion
-        remap(Left, Left, map11, map12, INTER_LINEAR);
-        remap(Right, Right, map21, map22, INTER_LINEAR);
+            //Load images from file (needs changing for known distance targets)
+            Mat Left =imread("../Task4/Unknown Targets/left" +to_string(ImageNum)+".jpg");
+            Mat Right=imread("../Task4/Unknown Targets/right"+to_string(ImageNum)+".jpg");
+            cout<<"Loaded image: "<<ImageNum<<endl;
 
-        //Match left and right images to create disparity image
-        Mat disp16bit, disp8bit;
-        sgbm->compute(Left, Right, disp16bit);                               //compute 16-bit greyscalse image with the stereo block matcher
-        disp16bit.convertTo(disp8bit, CV_8U, 255/(numberOfDisparities*16.)); //Convert disparity map to an 8-bit greyscale image so it can be displayed (Only for imshow, do not use for disparity calculations)
+            //Distort image to correct for lens/positional distortion
+            remap(Left, Left, map11, map12, INTER_LINEAR);
+            remap(Right, Right, map21, map22, INTER_LINEAR);
 
-        //==================================Your code goes here===============================
+            //Match left and right images to create disparity image
+            Mat disp16bit, disp8bit;
+            sgbm->compute(Left, Right, disp16bit);                               //compute 16-bit greyscalse image with the stereo block matcher
+            disp16bit.convertTo(disp8bit, CV_8U, 255/(numberOfDisparities*16.)); //Convert disparity map to an 8-bit greyscale image so it can be displayed (Only for imshow, do not use for disparity calculations)
 
+            //move to next image
+            ImageNum++;
 
+            //display images until x is pressed
+            int key=0;
+            while(waitKey(10)!='x')
+            {
+                imshow("left", Left);
+                imshow("right", Right);
+                imshow("disparity", disp8bit);
+            }
+        }
+        else if(ImageNum > 7){
 
+            Mat distLeft =imread("C:/GitHub/AINT308/AINT 308/Task4/Task4/Distance Targets/left" +to_string(distImgNum)+"cm.jpg");
+            Mat distRight =imread("C:/GitHub/AINT308/AINT 308/Task4/Task4/Distance Targets/right" +to_string(distImgNum)+"cm.jpg");
+            cout<< "Loaded distance image: "<<distImgNum<<endl;
+    
+            //Distort image to correct for lens/positional distortion
+            remap(distLeft, distLeft, map11, map12, INTER_LINEAR);
+            remap(distRight, distRight, map21, map22, INTER_LINEAR);
 
+            //Match left and right images to create disparity image
+            Mat disp16bit, disp8bit;
+            sgbm->compute(distLeft, distRight, disp16bit);                               //compute 16-bit greyscalse image with the stereo block matcher
+            disp16bit.convertTo(disp8bit, CV_8U, 255/(numberOfDisparities*16.)); //Convert disparity map to an 8-bit greyscale image so it can be displayed (Only for imshow, do not use for disparity calculations)
 
+            distImgNum = distImgNum + 10;
+            //display images until x is pressed
+            int key=0;
+            while(waitKey(10)!='x')
+            {
+                imshow("left", distLeft);
+                imshow("right", distRight);
+                imshow("disparity", disp8bit);
+            }
 
+            // uncomment when we have a disparity value.   DataFile<<disparityValue<<endl;
 
-
-
-
-
-
-
-
-
-        //display images untill x is pressed
-        int key=0;
-        while(waitKey(10)!='x')
-        {
-            imshow("left", Left);
-            imshow("right", Right);
-            imshow("disparity", disp8bit);
         }
 
-        //move to next image
-        ImageNum++;
-        if(ImageNum>7)
-        {
-            ImageNum=0;
-        }
     }
 
     return 0;
