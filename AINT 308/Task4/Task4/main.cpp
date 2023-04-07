@@ -79,6 +79,8 @@ int main(int argc, char** argv)
     while (1){
         if(ImageNum <= 7){
 
+            Rect ROI(329,206,75,55);
+
             //Load images from file (needs changing for known distance targets)
             Mat Left =imread("../Task4/Unknown Targets/left" +to_string(ImageNum)+".jpg");
             Mat Right=imread("../Task4/Unknown Targets/right"+to_string(ImageNum)+".jpg");
@@ -128,6 +130,11 @@ int main(int argc, char** argv)
                 imshow("left", distLeft);
                 imshow("right", distRight);
                 imshow("disparity", disp8bit);
+            }
+
+            if (distImgNum > 150){
+
+                distImgNum = 30;
             }
 
             // uncomment when we have a disparity value.   DataFile<<disparityValue<<endl;
