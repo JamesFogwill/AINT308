@@ -1,7 +1,9 @@
+QT += serialport
 TEMPLATE = app
 CONFIG += console c++17
 CONFIG -= app_bundle
 CONFIG -= qt
+
 
 #=====================OpenCV Includes=======================
 
@@ -52,6 +54,8 @@ LIBS +=    -lopencv_core411 \
 
 #====================Project Includes======================
 SOURCES += \
+    Functions.cpp \
     main.cpp
 
-HEADERS +=
+HEADERS += \
+    Functions.h
