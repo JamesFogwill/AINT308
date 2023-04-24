@@ -87,8 +87,11 @@ int main(int argc, char** argv)
     //current image index for distance loop
     for(int distImgNum = 30; distImgNum <= 150 ; distImgNum+= 10){
 
+        // will store the disparity for the known distance loop
         int disparityValue;
+        // stores the bf constants in an array to make a mean constant.
         int constant[13];
+        // stores the constant calculated distance
         int estimatedDistance;
 
         Mat distLeft =imread("C:/GitHub/AINT308/AINT 308/Task4/Task4/Distance Targets/left" +to_string(distImgNum)+"cm.jpg");
@@ -116,9 +119,11 @@ int main(int argc, char** argv)
         estimatedDistance = calculate.calcDist(disparityValue, constant[idx]);
         cout<<"The estimated distance is: "<<estimatedDistance<<"cm"<<endl;
 
+        // These plug the disparity and distance values into a matrix that is stored in the excel file later.
         dispVsDist.at<int>(idx,0) = disparityValue;
         dispVsDist.at<int>(idx,1) = distImgNum;
 
+        // calculates the mean constant when the constant array is full
         if(distImgNum == 150){
 
             meanBf = calculate.meanBf(constant, 12);
@@ -143,10 +148,11 @@ int main(int argc, char** argv)
 
     while (1){
 
-        //current image index
+        // variables for the resolution of the images
         int imgWidth;
         int imgHeight;
 
+        //loops through all the unknown images
         for(int ImageNum = 0; ImageNum <= 7; ImageNum++){
 
             int disparityValue;
@@ -178,15 +184,16 @@ int main(int argc, char** argv)
                     // finds disparity and distance at that pixel
                     disparityValue = disp16bit.at<ushort>(h,w);
 
+                    // finds the estimated distance using disparity and constant
                     estimatedDistance = calculate.calcDist(disparityValue,meanBf);
 
                     if(estimatedDistance <= 255){
-                        // applies the distance to that pixel value
-                        distanceMap.at<int>(h,w) = estimatedDistance;
+                        // applies the distance to the current pixel value
+                        distanceMap.at<uchar>(h,w) = estimatedDistance;
                     }
-                    // if out of the 255cm range just put 255
+                    // if out of the 255cm range just put 255cm
                     else{
-                        distanceMap.at<int>(h,w) = 255;
+                        distanceMap.at<uchar>(h,w) = 255;
                     }
                 }
             }
