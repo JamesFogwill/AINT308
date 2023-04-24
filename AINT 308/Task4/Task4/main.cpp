@@ -177,7 +177,7 @@ int main(int argc, char** argv)
             disp16bit.convertTo(disp8bit, CV_8U, 255/(numberOfDisparities*16.)); //Convert disparity map to an 8-bit greyscale image so it can be displayed (Only for imshow, do not use for disparity calculations)
 
             // loop to create distance map, cycles through every pixel
-            //THIS MAKES MY PROGRAM CRASH
+
             for(int w = 0; w < imgWidth; w++){
                 for(int h = 0; h < imgHeight; h++){
 
