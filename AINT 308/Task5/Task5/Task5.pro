@@ -52,6 +52,8 @@ LIBS +=    -lopencv_core411 \
 
 #====================Project Includes======================
 SOURCES += \
+    Detection.cpp \
     main.cpp
 
-HEADERS +=
+HEADERS += \
+    Detection.h

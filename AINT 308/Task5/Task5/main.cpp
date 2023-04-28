@@ -2,6 +2,7 @@
 #include<iostream>
 #include<fstream>
 #include<opencv2/opencv.hpp>
+#include<Detection.h>
 
 using namespace std;
 using namespace cv;
@@ -31,10 +32,23 @@ int main()
         return -1;
     }
 
+    //create detectin object
+    Detection myDetection;
+
     float rhoRes = 1;
     float thetaRes = M_PI/180;
+    int Threshold = 120;
 
-    int Threshold = 150;
+    vector<Vec2f>lines;
+    Vec2f averageLines[2];
+
+    // this thresholds the lines so houghlines function only looks for lines within these angles.
+    // the angle is relative to the x axis with 0 degrees beign verticle and 90 being horizontal.
+    // thresholding so only lines that point in the direction of the road are drawn
+    float minLineCheck = 35*(M_PI/180);
+    float maxLineCheck = 145*(M_PI/180);
+
+    Mat Frame, houghFrame;
 
     // creates polygon where we will be detecting the lines
     //top left, top right, bottom right,bottom left
@@ -47,50 +61,67 @@ int main()
     while(true){
 
         //open the next frame from the video file, or exit the loop if its the end
-        Mat Frame, grayFrame, gaussianFrame, cannyFrame, erodedFrame,dilatedFrame, houghFrame;
-
-        vector<Vec2f>lines;
-
         CarVideo.read(Frame);
         if(Frame.empty()){
             break;
         }
+        // makes the frame smaller for increased fps
+        resize(Frame,Frame,Size(1280,720));
+
+        float totalRhoNE = 0;
+        float totalRhoSE = 0;
+        float totalThetaNE = 0;
+        float totalThetaSE = 0;
+        int counterNE = 0;
+        int counterSE = 0;
 
         //==========================Your code goes here==========================
-
-        cvtColor(Frame, grayFrame, COLOR_BGR2GRAY);
-        GaussianBlur(grayFrame,gaussianFrame, Size(1,1),0,0); // Try more gaussian blur to remove background edges.
-        Mat kernal = getStructuringElement(MORPH_RECT, Size(3,3));
-        Canny(Frame,cannyFrame,175, 240);
-
         // erode removes small canny edges which are noise, dilate increases the size of edges to fill in gaps
         // erode and dilate code crash the bitwise and hough parts of my code
 
-        // creates the mask and fills with zeros
-        Mat Mask = Mat::zeros(cannyFrame.size(),cannyFrame.type());
-        //creates an area of block colour to go over the mask
-        Scalar ignoreMaskColour = Scalar(255,255,255);
-        // fills the roi with block white
-        fillPoly(Mask,vectorPolygons,ignoreMaskColour);
-        // shows the canny image only within the mask
-        Mat maskedImage;
-        bitwise_and(Mask,cannyFrame,maskedImage);
+        // takes your frame, applies bluring and canny
+        Mat cannyImage = myDetection.generateCanny(Frame);
+
+        // takes the frame you want the mask on and the mask size, and applies it
+        Mat maskedImage = myDetection.generateMask(cannyImage,vectorPolygons);
 
         imshow("masked Image", maskedImage);
 
-        // how can there be pink line on the left side when that side is not int he mask?
-        HoughLines(maskedImage,lines,rhoRes,thetaRes,Threshold,0,0);
+        // finds the lines that are aabove the threshold and within the min and max angle.
+        HoughLines(maskedImage,lines,rhoRes,thetaRes,Threshold, 0, 0, minLineCheck, maxLineCheck);
 
-        for(int i = 0; i <= lines.size(); i++){
+        //cycles through the lines and takes the average rhos for each lane.
+        for(int i = 0; i < lines.size(); i++){
 
-            // takes the magnitude of the angle left and right of the y axis and checks if the line has less than a 30 degree angle from the y
-            if(abs(lines[i][1] *180/M_PI) -90 <= 30 || abs(lines[i][1] *180/M_PI)-270 <= 30){
-                //cout<<lines[i][1]<<endl;
-                // draws the lines
-                lineRT(Frame,lines[i],Scalar(255,0,255),2);
+            if(lines[i][1] < 60*(M_PI/180)){
+                totalRhoNE += lines[i][0];
+                totalThetaNE += lines[i][1];
+                counterNE++;
+            }
+            else if(lines[i][1] > 120*(M_PI/180)){
+                totalRhoSE += lines[i][0];
+                totalThetaSE += lines[i][1];
+                counterSE++;
+            }
+            else{
+                cout<<"no lines to print"<<endl;
             }
 
         }
+        if(!lines.empty()){
+            averageLines[0][0] = totalRhoNE/counterNE;
+            averageLines[0][1] = totalThetaNE/counterNE;
+            averageLines[1][0] = totalRhoSE/counterSE;
+            averageLines[1][1] = totalThetaSE/counterSE;
+        }
+
+
+        for(int i = 0; i <= 2; i ++){
+
+            lineRT(Frame,averageLines[i],Scalar(0,0,255),2);
+
+        }
+
 
         //display frame
         imshow("Video", Frame);
@@ -98,5 +129,17 @@ int main()
     }
 }
 
+// notes
+// take the average of the hough lines pointing NE and the average rho of them pointing NW then just print these lines.
+// print the average rho between these two lines to get the midpoint of the road.
 
+/*
+if(lines[i][1] < 60){
+    lineRT(Frame,lines[i],Scalar(255,0,255),2);
+}
+else if(lines[i][1] > 120){
+    lineRT(Frame,lines[i],Scalar(255,0,255),2);
+}
+fillPoly(Frame,lines,Scalar(255,0,255));
+*/
 
