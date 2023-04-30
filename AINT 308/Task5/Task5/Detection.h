@@ -6,7 +6,7 @@
 
 using namespace std;
 using namespace cv;
-
+// class for functions used in detection of the road lines
 class Detection{
 
     private:
