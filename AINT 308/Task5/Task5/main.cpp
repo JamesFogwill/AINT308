@@ -24,12 +24,10 @@ void lineRT(Mat &Src, Vec2f L, Scalar color, int thickness){
 
 int main()
 {
-
     //Open video file
     VideoCapture CarVideo("../Task5/DashCam.mp4");
     VideoCapture myCarVideo("C:/GitHub/AINT308/AINT 308/Task5/Task5/MyDashCam.mp4");
     VideoCapture myCarVideoTwo("C:/GitHub/AINT308/AINT 308/Task5/Task5/MyDashCam2.mp4");
-
 
     if(!CarVideo.isOpened()){
         cout<<"Error opening video"<<endl;
@@ -54,7 +52,7 @@ int main()
 
     // creates polygon where we will be detecting the lines
     //top left, top right, bottom right,bottom left
-    //V1 is for the supplied video, V2 is for my video
+    //V1 is for the supplied video, V2 and V3 are for my test videos
     vector<Point>pointsV1 = {Point(589,404),Point(747,404),Point(1070,710),Point(200,710)};
     vector<Point>pointsV2 = {Point(570,370),Point(696,370), Point(1220,715),Point(174,715)};
     vector<Point>pointsV3 = {Point(668,437),Point(669,437), Point(1006,628),Point(393,628)};

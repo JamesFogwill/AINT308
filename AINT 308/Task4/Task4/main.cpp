@@ -202,6 +202,9 @@ int main(int argc, char** argv)
                 }
             }
 
+            int caseDistMap = distanceMap.at<uchar>(249,357);
+            cout<<"The distance to the case is: "<<caseDistMap<<"cm"<<endl;
+
             //display images until x is pressed
             int key=0;
             while(waitKey(10)!='x')

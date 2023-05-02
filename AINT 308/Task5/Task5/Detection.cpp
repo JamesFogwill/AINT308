@@ -16,7 +16,7 @@ Mat Detection::generateCanny(Mat Frame){
     // applied dilate and erode to a object, removes small edges and connects gaps in larger edges
     morphologyEx(cannyFrame, closedFrame,MORPH_CLOSE,kernal);
     //return the cannny Mat
-    imshow("CannyFrame", closedFrame);
+    //imshow("CannyFrame", closedFrame);
     return closedFrame;
 };
 
@@ -33,7 +33,7 @@ Mat Detection::generateMask(Mat cannyFrame, vector<vector<Point>> vectorPolygons
     //this allows only the (1,1) pixels to be seen on the mask Mat
     bitwise_and(Mask,cannyFrame, maskedFrame);
     // returns the canny within the ROI
-    imshow("Polygon Mask", Mask);
+    //imshow("Polygon Mask", Mask);
     imshow("Masked Canny Frame", maskedFrame);
     return maskedFrame;
 
