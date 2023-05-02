@@ -28,6 +28,8 @@ int main()
     //Open video file
     VideoCapture CarVideo("../Task5/DashCam.mp4");
     VideoCapture myCarVideo("C:/GitHub/AINT308/AINT 308/Task5/Task5/MyDashCam.mp4");
+    VideoCapture myCarVideoTwo("C:/GitHub/AINT308/AINT 308/Task5/Task5/MyDashCam2.mp4");
+
 
     if(!CarVideo.isOpened()){
         cout<<"Error opening video"<<endl;
@@ -55,15 +57,17 @@ int main()
     //V1 is for the supplied video, V2 is for my video
     vector<Point>pointsV1 = {Point(589,404),Point(747,404),Point(1070,710),Point(200,710)};
     vector<Point>pointsV2 = {Point(570,370),Point(696,370), Point(1220,715),Point(174,715)};
+    vector<Point>pointsV3 = {Point(668,437),Point(669,437), Point(1006,628),Point(393,628)};
     // this is a vector of polygons, only necessary for me because the fillPoly function takes this type as input
-    vector<vector<Point>>vectorPolygons = {pointsV2};
+    vector<vector<Point>>vectorPolygons = {pointsV3};
 
     //main program loop
     while(true){
 
         //open the next frame from the video file, or exit the loop if its the end
         //CarVideo.read(Frame);
-        myCarVideo.read(Frame);
+        //myCarVideo.read(Frame);
+        myCarVideoTwo.read(Frame);
 
         // if the video has ended leave the loop
         if(Frame.empty()){

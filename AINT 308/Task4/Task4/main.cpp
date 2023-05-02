@@ -79,9 +79,12 @@ int main(int argc, char** argv)
     DataFileKnown.open ("C:/GitHub/AINT308/AINT 308/Task4/Task4/DataK.csv");
     DataFileUnknown.open ("C:/GitHub/AINT308/AINT 308/Task4/Task4/DataUk.csv");
 
+    // initialisation of matix to store the distance vs disparity
+    // init of matrix to store the distances for distance map
     Mat dispVsDist = Mat::zeros(13,2, CV_32S);
     Mat distanceMap = Mat::zeros(480,640, CV_8U);
 
+    // variable to store the mean BF constant and a index counter variable
     int meanBf;
     int idx = 0;
     //current image index for distance loop
@@ -94,6 +97,7 @@ int main(int argc, char** argv)
         // stores the constant calculated distance
         int estimatedDistance;
 
+        // loads the known distance targets to calculate the constant
         Mat distLeft =imread("C:/GitHub/AINT308/AINT 308/Task4/Task4/Distance Targets/left" +to_string(distImgNum)+"cm.jpg");
         Mat distRight =imread("C:/GitHub/AINT308/AINT 308/Task4/Task4/Distance Targets/right" +to_string(distImgNum)+"cm.jpg");
         cout<<endl<< "Loaded distance image: "<<distImgNum<<"cm"<<endl;
@@ -104,7 +108,7 @@ int main(int argc, char** argv)
 
         //Match left and right images to create disparity image
         Mat disp16bit, disp8bit;
-        sgbm->compute(distLeft, distRight, disp16bit);                               //compute 16-bit greyscalse image with the stereo block matcher
+        sgbm->compute(distLeft, distRight, disp16bit);                       //compute 16-bit greyscalse image with the stereo block matcher
         disp16bit.convertTo(disp8bit, CV_8U, 255/(numberOfDisparities*16.)); //Convert disparity map to an 8-bit greyscale image so it can be displayed (Only for imshow, do not use for disparity calculations)
 
         //takes disparity at pixel coordinates on the target
